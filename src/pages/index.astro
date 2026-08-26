@@ -8,7 +8,6 @@ import { selectedProjects } from '../data/projects';
 <BaseLayout title="Theresia | Applied AI" description="Theresia builds useful Applied AI systems around what actually needs to happen.">
   <section class="hero shell">
     <div>
-      <p class="eyebrow">Applied AI · Systems · Problem ownership</p>
       <h1>Useful working systems, built around what actually needs to happen.</h1>
       <p class="hero-claim">I care more about whether something actually solves the problem than how technically impressive the solution is.</p>
       <div class="hero-copy">
@@ -25,12 +24,7 @@ import { selectedProjects } from '../data/projects';
   </section>
 
   <section class="selected-work shell" aria-labelledby="selected-work-title">
-    <div class="section-heading">
-      <div>
-        <p class="eyebrow">Selected work</p>
-        <h2 id="selected-work-title">Selected work</h2>
-      </div>
-    </div>
+    <h2 id="selected-work-title">Selected work</h2>
     <ProjectIndex projects={selectedProjects} featured />
   </section>
 
