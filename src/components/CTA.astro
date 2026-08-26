@@ -1,0 +1,18 @@
+---
+interface Props {
+  eyebrow?: string;
+  title: string;
+  body: string;
+}
+
+const { eyebrow = 'A practical next step', title, body } = Astro.props;
+---
+
+<section class="cta-block" aria-labelledby="cta-title">
+  <p class="eyebrow">{eyebrow}</p>
+  <div>
+    <h2 id="cta-title">{title}</h2>
+    <p>{body}</p>
+    <a class="text-link text-link-light" href="mailto:theresia.saumu@gmail.com">Email me →</a>
+  </div>
+</section>

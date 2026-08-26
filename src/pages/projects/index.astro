@@ -1,0 +1,20 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ProjectIndex from '../../components/ProjectIndex.astro';
+import { projects } from '../../data/projects';
+---
+
+<BaseLayout title="Projects | Theresia" description="Five Applied AI case studies following one clear reasoning structure.">
+  <header class="page-intro shell">
+    <div>
+      <p class="eyebrow">Complete body of work</p>
+      <h1>Five case studies.</h1>
+    </div>
+    <div class="page-intro-copy">
+      <p class="lead">Five different case studies following the same underlying structure.</p>
+    </div>
+  </header>
+  <section class="projects-page shell" aria-label="All projects">
+    <ProjectIndex projects={projects} />
+  </section>
+</BaseLayout>

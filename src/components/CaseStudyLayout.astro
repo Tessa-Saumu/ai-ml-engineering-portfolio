@@ -1,0 +1,28 @@
+---
+import type { Project } from '../data/projects';
+import CaseStudySection from './CaseStudySection.astro';
+import EvidencePanel from './EvidencePanel.astro';
+
+interface Props { project: Project }
+const { project } = Astro.props;
+---
+
+<article class="case-study shell">
+  <header class="case-hero">
+    <a class="back-link" href="/projects">← All projects</a>
+    <p class="eyebrow">Case study</p>
+    <h1>{project.title}</h1>
+    {project.subtitle && <p class="case-subtitle">{project.subtitle}</p>}
+  </header>
+  <div class="case-grid">
+    <div class="case-narrative">
+      <CaseStudySection number="01" title="The problem" text={project.problem} />
+      <CaseStudySection number="02" title="What I did and decided" text={project.did} />
+      <CaseStudySection number="03" title="What came of it" text={project.outcome} />
+    </div>
+    <EvidencePanel project={project} />
+  </div>
+  <nav class="case-next" aria-label="Project navigation">
+    <a href="/projects">See all five case studies →</a>
+  </nav>
+</article>
