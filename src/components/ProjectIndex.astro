@@ -1,0 +1,15 @@
+---
+import ProjectCard from './ProjectCard.astro';
+import type { Project } from '../data/projects';
+
+interface Props {
+  projects: Project[];
+  featured?: boolean;
+}
+
+const { projects, featured = false } = Astro.props;
+---
+
+<div class="project-list">
+  {projects.map((project, index) => <ProjectCard project={project} index={index} featured={featured} />)}
+</div>
