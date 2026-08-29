@@ -1,0 +1,11 @@
+# Netlify build configuration for the Astro portfolio.
+# These settings override the Build settings entered in the Netlify UI.
+# See https://docs.netlify.com/configure-builds/file-based-configuration/
+
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+# Astro 7 requires Node.js >= 22.12.0 (see "engines" in package.json).
+[build.environment]
+  NODE_VERSION = "22.12.0"
