@@ -16,9 +16,14 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           - data-netlify="true" turns on Netlify's form handling (no server of ours needed)
           - netlify-honeypot="bot-field" enables the invisible anti-spam field
           - action="/thanks" is where visitors land if they submit without JavaScript
+          - the hidden "subject" input sets the notification email's subject line
+            (%{submissionId} is filled in by Netlify)
+          Note: Netlify strips these attributes and injects its own form-name input when
+          the site is deployed — that's expected, not a bug.
         */}
         <form class="contact-form" name="contact" method="POST" action="/thanks" data-netlify="true" netlify-honeypot="bot-field">
           <input type="hidden" name="form-name" value="contact" />
+          <input type="hidden" name="subject" value={'New problem from your portfolio (%{submissionId})'} />
           <p hidden aria-hidden="true">
             <label>Leave this field empty: <input name="bot-field" tabindex="-1" autocomplete="off" /></label>
           </p>

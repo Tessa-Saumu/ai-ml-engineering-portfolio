@@ -2,8 +2,9 @@
 
 This portfolio is a **static Astro site hosted on Netlify**, so the contact form uses
 **Netlify Forms**: the form-handling service that is already built into your host.
-It needs no server of ours, no third-party account, and no API keys — Netlify detects
-the form in the built HTML at deploy time and starts accepting submissions on its own.
+It needs no server of ours, no third-party account, and no API keys — once form
+detection is enabled, Netlify scans your deploys for forms and starts accepting
+submissions on its own.
 
 **Why Netlify Forms (and not Formspree / Web3Forms / Basin):**
 
@@ -34,6 +35,7 @@ The form carries the attributes Netlify looks for:
 <form name="contact" method="POST" action="/thanks"
       data-netlify="true" netlify-honeypot="bot-field">
   <input type="hidden" name="form-name" value="contact" />
+  <input type="hidden" name="subject" value="New problem from your portfolio (%{submissionId})" />
   ...
 </form>
 ```
@@ -41,11 +43,36 @@ The form carries the attributes Netlify looks for:
 - `name="contact"` — the form's ID in your Netlify dashboard (and in notification emails)
 - `data-netlify="true"` — turns Netlify's form handling on
 - `netlify-honeypot="bot-field"` — invisible field that traps spam bots
-- the hidden `form-name` input — required so Netlify knows which form a submission belongs to
+- the hidden `form-name` input — tells Netlify which form a submission belongs to
+- the hidden `subject` input — sets the notification email's subject line
+  (`%{submissionId}` is a variable Netlify fills in; `%{formName}` and `%{siteName}` also work)
+
+**Two things the current docs say that are good to know:**
+
+- At deploy time Netlify **strips** the `data-netlify` and `netlify-honeypot` attributes
+  from the live HTML and injects its own `form-name` input. So if you view-source on the
+  deployed page and those attributes are gone — that's expected, not a bug.
+- The AJAX submission matches the documented requirements exactly: the body is
+  **URL-encoded** (Netlify Forms does not support JSON form data), and it sends the
+  `Content-Type: application/x-www-form-urlencoded` header, which is what's required
+  for a text-only form like this one.
 
 ---
 
-## Step 1 — Deploy
+## Step 1 — Turn on form detection (once, before deploying)
+
+Netlify no longer scans every site for forms by default — form detection must be enabled:
+
+1. In the Netlify UI, open your site and go to **Forms**.
+2. If you see an **Enable form detection** button, select it. (If your site already used
+   Netlify Forms before, it may already be on — the state is shown at
+   **Forms > Usage and configuration > Form detection**.)
+
+From your next deploy onward, Netlify will scan the built HTML for forms. Doing this
+**before** merging the form means the very first deploy containing it gets scanned —
+no extra deploy needed.
+
+## Step 2 — Deploy
 
 Merge the branch (or push to `master`), so Netlify builds and publishes the site:
 
@@ -55,32 +82,31 @@ git push origin master   # or merge the PR in GitHub
 
 Then confirm the form was detected:
 
-1. Open your site on **Netlify → your site → Forms** (left sidebar).
-2. You should see an **active form called `contact`** with the four fields.
+1. Open **Netlify → your site → Forms**.
+2. You should see an active form called **`contact`** with the four fields.
 
-> That listing is your proof that detection worked. If it's missing, the deployed build
-> didn't include the form HTML — redeploy and check again.
+> That listing is your proof that detection worked. If it's missing, the two usual causes
+> are: form detection isn't enabled (Step 1), or the deployed build predates the form.
+> Fix and redeploy.
 
 **Note on local testing:** the form only works on the deployed Netlify site. Submitting
 from `npm run dev` shows "That didn't send" — expected, because your laptop has no
 Netlify server behind it to receive the POST.
 
-## Step 2 — Connect it to your email
+## Step 3 — Connect it to your email
 
-Notifications are one setting in the Netlify UI (this is the step that makes submissions
-reach your inbox):
+One setting in the Netlify UI — this is the step that makes submissions reach your inbox:
 
-1. **Netlify → your site → Forms → contact** (the form's overview page).
-2. Choose **Notifications** (or *Settings and notifications* → *Add notification*).
-3. Pick **Email notification**.
-4. Set *Event to listen for* = **New form submission**, and send it to
-   `theresia.saumu@gmail.com`.
-5. Save. Repeat on the **Forms (all forms)** level if you'd rather catch every form.
+1. For your site, go to **Configuration → Notifications → Emails and webhooks →
+   Form submission notifications**, and select **Add notification**.
+2. Choose **Email notification**, set *Event to listen for* = **New form submission**,
+   and send it to `theresia.saumu@gmail.com`.
+3. Save. (You can scope the notification to the `contact` form only, or to all forms.)
 
-Every submission will now email you automatically. No other configuration is needed —
-there is nothing to wire up in the code.
+Every **verified** (non-spam) submission will now email you automatically. There is
+nothing to wire up in the code.
 
-## Step 3 — Test that a real submission reaches your inbox
+## Step 4 — Test that a real submission reaches your inbox
 
 The end-to-end test (takes about two minutes):
 
@@ -90,11 +116,15 @@ The end-to-end test (takes about two minutes):
    - Email: an address you can check (your Gmail is fine)
    - Problem: `Testing the contact form — please ignore.`
 3. Click **Send the problem →**. You should see: *"Got it. Your message is on its way to my inbox."*
-4. Check **your Gmail inbox** for a **"New form submission on contact"** email from Netlify
+4. Check **your Gmail inbox** for an email with the subject
+   **"New problem from your portfolio (…)"** from `formresponses@netlify.com`
    (usually arrives within a minute). If it isn't there, look in **Spam** and mark it
    *Not spam* so future ones arrive normally.
 5. Cross-check in the dashboard: **Netlify → Forms → contact** shows the same submission
-   under *Received submissions*, with all four fields.
+   under *Verified submissions*, with all four fields.
+6. Bonus check — **test that Reply works**: hit *Reply* on the notification email. Because
+   the form has a field named `email`, Netlify sets the notification's *Reply-to* to the
+   submitter's address, so the To: field should show the test address you entered.
 
 You can also fire one submission from the terminal — useful because it removes the browser
 from the equation entirely:
@@ -121,25 +151,31 @@ Either one alone isn't enough — together they prove the whole chain works.
 visitor's browser          Netlify's servers                  your inbox
 ┌────────────────┐   POST   ┌──────────────────────────┐   email   ┌──────────────┐
 │ the form on    │ ───────► │ Netlify receives the     │ ────────► │ notification │
-│ /contact       │          │ message, checks it for   │           │ email with   │
+│ /contact       │          │ message, filters it for  │           │ email with   │
 └────────────────┘          │ spam, stores a copy in   │           │ all fields   │
                             │ the Forms inbox          │           └──────────────┘
                             └──────────────────────────┘
 ```
 
-In one sentence: **the visitor's browser hands the message to Netlify, Netlify keeps a
-copy in the site's dashboard and emails you a notification — your website itself has no
-server; Netlify *is* the server.**
+In one sentence: **the visitor's browser hands the message to Netlify, Netlify checks it
+for spam, keeps a copy in the site's dashboard, and emails you a notification — your
+website itself has no server; Netlify *is* the server.**
 
-Three things worth knowing:
+Things worth knowing:
 
-- **There are two copies of every message**: one in Netlify's dashboard ( Forms → contact →
-  *Received submissions*, exportable any time) and one in the notification email.
-- **Don't hit "Reply" on the notification email** — it goes back to Netlify, not to the
-  visitor. Compose a fresh email to the address they typed in the form.
-- **Spam bots are filtered first**: the hidden `bot-field` honeypot silently drops bot
-  submissions, and submissions flagged as spam are kept in a separate *Spam* folder in the
-  dashboard rather than emailed to you.
+- **Every submission is spam-filtered twice.** First, every submission is checked with
+  Akismet (built in, automatic): flagged ones land in the form's *Spam submissions* list
+  in the dashboard instead of your email. Second, the hidden `bot-field` honeypot catches
+  crude bots — those submissions are rejected outright, not even counted as spam.
+- **There are two copies of every real message**: one in Netlify's dashboard
+  (Forms → contact → *Verified submissions*, exportable any time) and one in the
+  notification email.
+- **You can reply directly to the notification email.** Notification emails come from
+  `formresponses@netlify.com`, but Netlify sets the *Reply-to* to whatever the visitor
+  typed in the `email` field — so Reply addresses them, not Netlify.
+- **Notifications only fire for verified submissions** — if an email never arrives but the
+  dashboard shows the message, it was probably flagged as spam (check the *Spam
+  submissions* list).
 
 ## Limits and costs
 
@@ -147,14 +183,17 @@ Three things worth knowing:
   submissions/month** (Netlify emails you as you approach it); newer credit-based accounts
   include form submissions with no per-submission charge. A portfolio contact form will
   realistically never come close.
-- Uploading files, Akismet spam filtering, and outgoing webhooks are paid extras this form
-  deliberately doesn't need.
+- Spam filtering (Akismet + honeypot) is included automatically — no paid add-on needed
+  for this form.
+- File uploads (8 MB request limit, one file per field) are supported by Netlify Forms but
+  deliberately not used here.
 
 ## Troubleshooting
 
 | Symptom | Likely cause / fix |
 |---|---|
-| No `contact` form under Netlify → Forms | The deployed build predates the form. Redeploy the latest build; check the form exists in `dist/contact/index.html`. |
-| Submitting shows "That didn't send" on the live site | Usually means the form wasn't detected at deploy — verify Step 1, then redeploy. |
-| Email doesn't arrive but dashboard shows the submission | Notification not saved, or it went to Spam. Re-check Step 2 and the spam folder. |
+| No `contact` form under Netlify → Forms | Form detection not enabled (Step 1), or the deployed build predates the form. Check both, then redeploy. |
+| Submitting shows "That didn't send" on the live site | Usually means the form wasn't detected at deploy — verify Steps 1–2, then redeploy. |
+| Email doesn't arrive but dashboard shows the submission | Notification not saved (Step 3), it went to Spam, or the submission was flagged as spam — check the *Spam submissions* list. |
+| `data-netlify` missing from the live page source | Expected — Netlify strips it and injects its own `form-name` input at deploy time. |
 | Testing locally fails | Expected — Netlify Forms only work on the deployed site. |
