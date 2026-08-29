@@ -144,10 +144,16 @@ h3 { font-size: clamp(1.35rem, 2.2vw, 1.85rem); }
 .form-field input::placeholder, .form-field textarea::placeholder { color: rgba(42, 46, 43, 0.45); }
 .form-field input:focus-visible, .form-field textarea:focus-visible { outline: 3px solid var(--gold); outline-offset: 0; border-color: var(--green); }
 .form-field textarea { min-height: 150px; resize: vertical; }
+.char-count { justify-self: end; font-size: 0.8rem; color: rgba(42, 46, 43, 0.6); }
+.char-count.is-near-limit { color: var(--gold); font-weight: 600; }
 .form-submit { justify-self: start; padding: 14px 26px; border: none; background: var(--green); color: var(--background); font-family: 'Inter', sans-serif; font-size: 1rem; font-weight: 600; cursor: pointer; }
 .form-submit:hover { background: var(--green-dark); }
 .form-submit:disabled { opacity: 0.6; cursor: default; }
 .form-note { margin: 0; font-size: 0.85rem; color: rgba(42, 46, 43, 0.75); }
+.form-status { margin-top: 24px; }
+/* Gold accent marks a friendly nudge or error, green marks a successful send. Both come from the site palette. */
+.form-status.is-error { padding-left: 16px; border-left: 3px solid var(--gold); }
+.form-status.is-success { padding-left: 16px; border-left: 3px solid var(--green); }
 .form-status h3 { margin-bottom: 8px; }
 .form-status p { margin: 0; }
 

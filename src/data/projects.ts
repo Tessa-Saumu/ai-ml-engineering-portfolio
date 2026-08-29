@@ -28,7 +28,7 @@ export const projects: Project[] = [
     imageAlt: 'Full in-motion demo of Agentic BI Builder running from raw data through KPI reasoning to a Power BI file.',
     evidenceLabel: 'End-to-end demo',
     tech: ['Power BI'],
-    repoNote: 'Private repository — available on request.',
+    repoNote: 'Private repository, available on request.',
   },
   {
     slug: 'financial-risk-monitor',
@@ -41,7 +41,7 @@ export const projects: Project[] = [
     imageAlt: 'Scenario Explorer dashboard showing an adjusted risk score, shock controls, and Monte Carlo paths.',
     evidenceLabel: 'Scenario Explorer',
     tech: ['Yahoo Finance', 'FRED', 'SQLite', 'Prophet', 'Power BI'],
-    repoNote: 'Private repository — available on request.',
+    repoNote: 'Private repository, available on request.',
   },
   {
     slug: 'solarsense',

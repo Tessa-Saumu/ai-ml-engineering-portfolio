@@ -2,7 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
-<BaseLayout title="Contact | Theresia" description="Contact Theresia about one scoped Applied AI problem.">
+<BaseLayout title="Contact Theresia Saumu | Applied AI & ML Engineer" description="Bring Theresia Saumu one scoped Applied AI problem. She spends a week building a working solution, and you decide from there.">
   <section class="simple-page shell">
     <div class="simple-grid">
       <h1>Contact</h1>
@@ -30,7 +30,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
           <div class="form-field">
             <label for="contact-name">Your name</label>
-            <input id="contact-name" name="name" type="text" autocomplete="name" required />
+            <input id="contact-name" name="name" type="text" autocomplete="name" required maxlength="100" />
           </div>
 
           <div class="form-field">
@@ -40,7 +40,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
           <div class="form-field">
             <label for="contact-company">Company (optional)</label>
-            <input id="contact-company" name="company" type="text" autocomplete="organization" />
+            <input id="contact-company" name="company" type="text" autocomplete="organization" maxlength="100" />
           </div>
 
           <div class="form-field">
@@ -50,7 +50,9 @@ import BaseLayout from '../layouts/BaseLayout.astro';
               name="problem"
               rows="6"
               required
+              maxlength="2000"
               placeholder="One scoped problem is enough. What needs to happen, and what's in the way."></textarea>
+            <span class="char-count" id="problem-count">0 / 2,000 characters</span>
           </div>
 
           <button class="form-submit" type="submit">Send the problem →</button>
@@ -78,22 +80,91 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   const button = form?.querySelector<HTMLButtonElement>('button[type="submit"]');
 
   if (form && statusBox && button) {
+    const nameInput = form.querySelector<HTMLInputElement>('#contact-name');
+    const emailInput = form.querySelector<HTMLInputElement>('#contact-email');
+    const problemInput = form.querySelector<HTMLTextAreaElement>('#contact-problem');
+
+    // QA #4: show the 2,000-character budget filling up instead of silently truncating.
+    const problemCount = document.getElementById('problem-count');
+    const updateCount = () => {
+      if (!problemInput || !problemCount) return;
+      const length = problemInput.value.length;
+      problemCount.textContent = `${length.toLocaleString('en')} / 2,000 characters`;
+      problemCount.classList.toggle('is-near-limit', length >= 1800);
+    };
+    problemInput?.addEventListener('input', updateCount);
+    updateCount();
+
+    // Let our own friendly messages replace the browser's default popups (no-JS visitors still get native required checks).
+    form.noValidate = true;
+
+    // One helper so success and error messages share the same styled status box.
+    const setStatus = (html: string, kind: 'success' | 'error') => {
+      statusBox.className = `form-status is-${kind}`;
+      statusBox.innerHTML = html;
+    };
+
     const showSuccess = () => {
-      form.hidden = true;
-      statusBox.innerHTML =
-        '<h3>Got it.</h3><p>Your message is on its way to my inbox. I&rsquo;ll reply from theresia.saumu@gmail.com.</p>';
+      // Keep the form visible (instead of hiding it) so the button can read "Sent".
+      button.disabled = true;
+      button.textContent = 'Sent';
+      setStatus(
+        '<h3>Thanks, message sent.</h3><p>I&rsquo;ll be in touch from theresia.saumu@gmail.com.</p>',
+        'success',
+      );
     };
 
     const showError = () => {
-      statusBox.innerHTML =
-        '<h3>That didn&rsquo;t send.</h3><p>Something went wrong delivering the message. Please try again, or <a href="mailto:theresia.saumu@gmail.com">email me directly</a>.</p>';
+      setStatus(
+        '<h3>That didn&rsquo;t send.</h3><p>Something went wrong delivering the message. Please try again, or <a href="mailto:theresia.saumu@gmail.com">email me directly</a>.</p>',
+        'error',
+      );
       button.disabled = false;
       button.textContent = 'Send the problem →';
+    };
+
+    // QA #9: a realistic address needs a dot and a 2+ letter TLD, so "a@b" cannot slip through.
+    const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[A-Za-z]{2,}$/;
+    // QA #2: a usable problem statement is at least a couple of words, not any single string.
+    const PROBLEM_MIN_CHARS = 20;
+
+    // Friendly pre-send checks: each missing piece gets its own nudge, and we return the field to focus.
+    const validate = (): HTMLInputElement | HTMLTextAreaElement | null => {
+      const value = (el: HTMLInputElement | HTMLTextAreaElement | null) => (el?.value ?? '').trim();
+      if ([nameInput, emailInput, problemInput].every((el) => value(el) === '')) {
+        setStatus('<p>Nothing to send yet. Add your name, email, and the problem, then press send.</p>', 'error');
+        return nameInput ?? null;
+      }
+      const email = value(emailInput);
+      if (email === '' || !EMAIL_PATTERN.test(email)) {
+        setStatus('<p>I need a working email address to reply to. Add it above and try again.</p>', 'error');
+        return emailInput ?? null;
+      }
+      if (value(nameInput).length < 2) {
+        setStatus('<p>Add your name so I know who&rsquo;s writing.</p>', 'error');
+        return nameInput ?? null;
+      }
+      const problem = value(problemInput);
+      if (problem === '') {
+        setStatus('<p>Don&rsquo;t forget the problem. A sentence or two is plenty.</p>', 'error');
+        return problemInput ?? null;
+      }
+      if (problem.length < PROBLEM_MIN_CHARS || !/\S\s+\S/.test(problem)) {
+        setStatus('<p>That&rsquo;s too short to work from. Describe the problem in a sentence or two.</p>', 'error');
+        return problemInput ?? null;
+      }
+      return null;
     };
 
     form.addEventListener('submit', async (event) => {
       event.preventDefault();
       if (button.disabled) return;
+
+      const invalid = validate();
+      if (invalid) {
+        invalid.focus();
+        return;
+      }
 
       const data = new FormData(form);
 
