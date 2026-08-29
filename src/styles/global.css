@@ -135,7 +135,7 @@ h3 { font-size: clamp(1.35rem, 2.2vw, 1.85rem); }
 .link-row { display: flex; flex-wrap: wrap; gap: 28px; margin-top: 28px; }
 .link-row a { color: var(--green); font-weight: 600; }
 
-/* Contact form (handled by Netlify Forms — no server of our own) */
+/* Contact form (handled by Netlify Forms, no server of our own) */
 .visually-hidden { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
 .contact-form { display: grid; gap: 22px; max-width: 560px; margin-top: 32px; }
 .form-field { display: grid; gap: 8px; }
