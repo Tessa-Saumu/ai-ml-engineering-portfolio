@@ -38,10 +38,10 @@ h3 { font-size: clamp(1.35rem, 2.2vw, 1.85rem); }
 
 .hero {
   display: grid;
-  grid-template-columns: minmax(0, 1.2fr) minmax(220px, 0.55fr);
+  grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.75fr);
   gap: clamp(36px, 6vw, 72px);
-  align-items: end;
-  padding-block: 48px 36px;
+  align-items: stretch;
+  padding-block: 40px 28px;
   border-bottom: 1px solid var(--line);
 }
 .hero h1 { max-width: 720px; margin-bottom: 16px; font-size: clamp(2.15rem, 4.8vw, 3.55rem); }
@@ -50,30 +50,20 @@ h3 { font-size: clamp(1.35rem, 2.2vw, 1.85rem); }
 .hero-copy p { margin-bottom: 0.95rem; }
 .hero-portrait {
   position: relative;
-  margin: 0 0 8px;
-  aspect-ratio: 4 / 5;
-  max-height: 420px;
-  background: var(--green);
+  min-width: 0;
+  margin: 0;
+  background: #2c3d32; /* matches the photo's own backdrop so edges blend */
 }
 .hero-portrait img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center 12%;
-  mix-blend-mode: luminosity;
-  opacity: 0.92;
-}
-.hero-portrait::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(180deg, transparent 55%, rgba(63, 92, 85, 0.28));
-  pointer-events: none;
+  object-position: center;
 }
 .hero-portrait figcaption {
   position: absolute;
   left: 0;
-  bottom: -1.6rem;
+  bottom: -1.4rem;
   color: var(--green);
   font-size: 0.72rem;
   letter-spacing: 0.12em;
@@ -143,12 +133,23 @@ h3 { font-size: clamp(1.35rem, 2.2vw, 1.85rem); }
 .link-row { display: flex; flex-wrap: wrap; gap: 28px; margin-top: 28px; }
 .link-row a { color: var(--green); font-weight: 600; }
 
+@media (max-width: 1099px) {
+  .hero { grid-template-columns: 1fr; padding-block: 36px 28px; }
+  .hero-portrait {
+    order: -1;
+    width: 100%;
+    max-width: 520px;
+    margin: 0 auto 32px;
+    aspect-ratio: 1209 / 1300;
+  }
+  .hero-portrait img { object-fit: contain; }
+  .hero-portrait figcaption { left: 0; right: 0; text-align: center; }
+}
+
 @media (max-width: 800px) {
   :root { --shell: min(100% - 32px, 680px); }
   .header-inner { min-height: 64px; }
   .nav-list { gap: 14px; font-size: .88rem; }
-  .hero { grid-template-columns: 1fr; padding-block: 36px 28px; }
-  .hero-portrait { order: -1; max-width: 280px; max-height: 340px; }
   .page-intro, .simple-grid { grid-template-columns: 1fr; }
   .selected-work { padding-block: 40px 16px; }
   .projects-page { padding-block: 16px 64px; }
@@ -166,7 +167,6 @@ h3 { font-size: clamp(1.35rem, 2.2vw, 1.85rem); }
   .header-inner { align-items: flex-start; flex-direction: column; gap: 10px; padding-block: 16px; }
   .nav-list { width: 100%; justify-content: space-between; }
   .hero h1 { font-size: 2.15rem; }
-  .hero-portrait { max-width: 220px; }
   .page-intro { padding-block: 40px 20px; }
   .case-study { padding-block: 36px 64px; }
   .back-link { margin-bottom: 28px; }
