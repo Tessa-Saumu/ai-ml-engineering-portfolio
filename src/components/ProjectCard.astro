@@ -18,12 +18,8 @@ const { project, index, featured = false } = Astro.props;
     <a class="text-link" href={`/projects/${project.slug}`}>Read the case study →</a>
   </div>
   <div class="project-card-visual">
-    {project.image ? (
+    {project.image && (
       <img src={project.image} alt={project.imageAlt} loading="lazy" />
-    ) : (
-      <div class="evidence-placeholder" aria-label="Demo evidence placeholder">
-        <span>Raw data</span><i></i><span>KPI reasoning</span><i></i><span>Power BI file</span>
-      </div>
     )}
   </div>
 </article>

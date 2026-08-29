@@ -11,6 +11,8 @@ export type Project = {
   evidenceLabel: string;
   evidenceNote?: string;
   tech: string[];
+  repoUrl?: string;
+  repoNote?: string;
 };
 
 export const projects: Project[] = [
@@ -22,9 +24,11 @@ export const projects: Project[] = [
     problem: 'Starting a BI project means profiling the data, deciding what matters to the business, writing the queries, and building the report. That setup gets redone from scratch for every new business.',
     did: "I built a BI report automation tool with deterministic data profiling and LLM-based KPI inference. Profiling is deterministic on purpose: typing and structuring a column has one correct answer and doesn't need an LLM guessing at it. KPI inference is where the judgment lives, so the LLM proposes KPIs within a schema rather than free text. A Reflector checks those proposals before they move forward. Early runs sometimes produced something technically valid but wrong for the data, like a churn rate for a business with no repeat customers. The final stage is a PBIR compiler I built by reverse-engineering Power BI's file format, so the output opens directly in Power BI Desktop rather than becoming another CSV to import manually.",
     outcome: "I ran the full pipeline against HR analytics, Chinook, and retail, three different domains, and all three completed end to end, with the pipeline catching and rectifying errors. Next time I'd test it against more domains before calling the architecture settled.",
-    evidenceLabel: 'Demo evidence pending',
-    evidenceNote: 'The full in-motion demo will appear here. The supplied empty terminal frame is intentionally not used as standalone evidence.',
-    tech: ['Deterministic data profiling', 'LLM-based KPI inference', 'Reflector validation', 'PBIR compiler', 'Power BI Desktop'],
+    image: '/images/agentic-bi-demo.gif',
+    imageAlt: 'Full in-motion demo of Agentic BI Builder running from raw data through KPI reasoning to a Power BI file.',
+    evidenceLabel: 'End-to-end demo',
+    tech: ['Power BI'],
+    repoNote: 'Private repository — available on request.',
   },
   {
     slug: 'financial-risk-monitor',
@@ -36,7 +40,8 @@ export const projects: Project[] = [
     image: '/images/financial-risk-scenario.png',
     imageAlt: 'Scenario Explorer dashboard showing an adjusted risk score, shock controls, and Monte Carlo paths.',
     evidenceLabel: 'Scenario Explorer',
-    tech: ['Yahoo Finance', 'FRED', 'SQLite', 'Monte Carlo simulation', 'Prophet', 'Power BI'],
+    tech: ['Yahoo Finance', 'FRED', 'SQLite', 'Prophet', 'Power BI'],
+    repoNote: 'Private repository — available on request.',
   },
   {
     slug: 'solarsense',
@@ -49,7 +54,8 @@ export const projects: Project[] = [
     imageAlt: 'Portfolio system diagram showing the SolarSense gateway, orchestration layer, two trained models, and deterministic ROI engine.',
     evidenceLabel: 'System architecture',
     evidenceNote: 'Portfolio diagram representing the implemented workflow, not an application screenshot.',
-    tech: ['Gradient Boosting Regressor', 'XGBoost', 'Deterministic ROI engine', 'Shared authentication', 'Rate limiting'],
+    tech: ['Gradient Boosting', 'XGBoost'],
+    repoUrl: 'https://github.com/SolarSense-Capstone/DSE-models',
   },
   {
     slug: 'studygapai',
@@ -61,7 +67,8 @@ export const projects: Project[] = [
     image: '/images/studygapai-diagnostic.png',
     imageAlt: 'StudyGapAI diagnostic report with a diagnostic summary and overall performance details.',
     evidenceLabel: 'Diagnostic report',
-    tech: ['React', 'Flask', 'Supabase authentication', 'Gap diagnosis', 'Six-week study planning'],
+    tech: ['React', 'Flask', 'Supabase'],
+    repoUrl: 'https://github.com/Tessa-777/StudyGapAI',
   },
   {
     slug: 'alzheimers-disease-classification',
@@ -74,7 +81,8 @@ export const projects: Project[] = [
     imageAlt: 'Rejected DenseNet confusion matrix with a note explaining duplicate scan leakage across train and test data.',
     evidenceLabel: 'Data leakage evidence',
     evidenceNote: 'This result was rejected and is not presented as a valid performance outcome.',
-    tech: ['DenseNet', 'ResNet', 'EfficientNet', 'Per-image regularization', 'Dataset leakage audit'],
+    tech: ['DenseNet', 'ResNet', 'EfficientNet'],
+    repoUrl: 'https://github.com/Tessa-Saumu/Alzheimer-s-Disease-Classification',
   },
 ];
 

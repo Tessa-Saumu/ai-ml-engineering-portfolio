@@ -7,26 +7,21 @@ const { project } = Astro.props;
 ---
 
 <aside class="evidence-panel" aria-label="Project evidence">
-  <div class="evidence-heading">
-    <p class="eyebrow">Evidence</p>
-    <h2>{project.evidenceLabel}</h2>
-  </div>
-  {project.image ? (
+  <p class="eyebrow">Evidence</p>
+  <h2>{project.evidenceLabel}</h2>
+  {project.image && (
     <figure>
       <img src={project.image} alt={project.imageAlt} />
       {project.evidenceNote && <figcaption>{project.evidenceNote}</figcaption>}
     </figure>
-  ) : (
-    <div class="evidence-empty">
-      <div class="evidence-placeholder large" aria-hidden="true">
-        <span>Raw data</span><i></i><span>Reasoning</span><i></i><span>PBIR</span>
-      </div>
-      <p>{project.evidenceNote}</p>
-    </div>
   )}
-  <div class="evidence-links">
-    <span>Repository link</span>
-    <span aria-label="Placeholder, link coming soon">Coming soon</span>
-  </div>
-  <TechStackList items={project.tech} />
+  {project.repoUrl && (
+    <p class="evidence-repo">
+      <a href={project.repoUrl} rel="noreferrer">View repository →</a>
+    </p>
+  )}
+  {project.repoNote && !project.repoUrl && (
+    <p class="evidence-repo-note">{project.repoNote}</p>
+  )}
+  {project.tech.length > 0 && <TechStackList items={project.tech} />}
 </aside>
