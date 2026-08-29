@@ -87,6 +87,8 @@ h3 { font-size: clamp(1.35rem, 2.2vw, 1.85rem); }
 .project-card-visual { min-height: 280px; overflow: hidden; background: var(--paper); }
 .project-card.featured:first-child .project-card-visual { min-height: 340px; }
 .project-card-visual img { width: 100%; height: auto; }
+/* View all projects page only: no hardcoded card background (inherits the site background, so theme color changes can't clash) and vertically centred images */
+.projects-page .project-card-visual { background: none; display: flex; align-items: center; }
 
 .cta-wrap { padding-block: 20px 96px; }
 .cta-block {
