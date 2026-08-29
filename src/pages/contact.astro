@@ -9,8 +9,58 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       <div class="simple-copy">
         <h2>Give me one problem you'd like solved by next week.</h2>
         <p>Give me one scoped problem. I'll spend a week building a solution and you can decide if you want me on the team.</p>
-        <a class="primary-action" href="mailto:theresia.saumu@gmail.com">Email me →</a>
-        <div class="link-row" aria-label="Social links">
+
+        {/*
+          Netlify Forms: the attributes below are what Netlify detects at deploy time.
+          - name="contact" is the form's ID in the Netlify dashboard
+          - data-netlify="true" turns on Netlify's form handling (no server of ours needed)
+          - netlify-honeypot="bot-field" enables the invisible anti-spam field
+          - action="/thanks" is where visitors land if they submit without JavaScript
+          - the hidden "subject" input sets the notification email's subject line
+            (%{submissionId} is filled in by Netlify)
+          Note: Netlify strips these attributes and injects its own form-name input when
+          the site is deployed. That's expected, not a bug.
+        */}
+        <form class="contact-form" name="contact" method="POST" action="/thanks" data-netlify="true" netlify-honeypot="bot-field">
+          <input type="hidden" name="form-name" value="contact" />
+          <input type="hidden" name="subject" value={'New problem from your portfolio (%{submissionId})'} />
+          <p hidden aria-hidden="true">
+            <label>Leave this field empty: <input name="bot-field" tabindex="-1" autocomplete="off" /></label>
+          </p>
+
+          <div class="form-field">
+            <label for="contact-name">Your name</label>
+            <input id="contact-name" name="name" type="text" autocomplete="name" required />
+          </div>
+
+          <div class="form-field">
+            <label for="contact-email">Your email</label>
+            <input id="contact-email" name="email" type="email" autocomplete="email" required />
+          </div>
+
+          <div class="form-field">
+            <label for="contact-company">Company (optional)</label>
+            <input id="contact-company" name="company" type="text" autocomplete="organization" />
+          </div>
+
+          <div class="form-field">
+            <label for="contact-problem">The problem you'd like solved</label>
+            <textarea
+              id="contact-problem"
+              name="problem"
+              rows="6"
+              required
+              placeholder="One scoped problem is enough. What needs to happen, and what's in the way."></textarea>
+          </div>
+
+          <button class="form-submit" type="submit">Send the problem →</button>
+          <p class="form-note">Submissions land in my inbox. I reply from theresia.saumu@gmail.com.</p>
+        </form>
+
+        <div class="form-status" id="form-status" role="status" aria-live="polite"></div>
+
+        <div class="link-row" aria-label="Other ways to reach me">
+          <a href="mailto:theresia.saumu@gmail.com">Email me directly →</a>
           <a href="https://www.linkedin.com/in/theresia-saumu/" rel="noreferrer">LinkedIn</a>
           <a href="https://github.com/Tessa-Saumu" rel="noreferrer">GitHub →</a>
         </div>
@@ -18,3 +68,59 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     </div>
   </section>
 </BaseLayout>
+
+<script>
+  // Progressive enhancement: submit without leaving the page.
+  // Netlify's form handler accepts a urlencoded POST to any static page on the site.
+  // If JavaScript is unavailable, the form falls back to a normal POST + redirect to /thanks.
+  const form = document.querySelector<HTMLFormElement>('form.contact-form');
+  const statusBox = document.getElementById('form-status');
+  const button = form?.querySelector<HTMLButtonElement>('button[type="submit"]');
+
+  if (form && statusBox && button) {
+    const showSuccess = () => {
+      form.hidden = true;
+      statusBox.innerHTML =
+        '<h3>Got it.</h3><p>Your message is on its way to my inbox. I&rsquo;ll reply from theresia.saumu@gmail.com.</p>';
+    };
+
+    const showError = () => {
+      statusBox.innerHTML =
+        '<h3>That didn&rsquo;t send.</h3><p>Something went wrong delivering the message. Please try again, or <a href="mailto:theresia.saumu@gmail.com">email me directly</a>.</p>';
+      button.disabled = false;
+      button.textContent = 'Send the problem →';
+    };
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      if (button.disabled) return;
+
+      const data = new FormData(form);
+
+      // Honeypot filled in: almost certainly a bot. Pretend it worked, send nothing.
+      if ((data.get('bot-field') ?? '').toString().trim() !== '') {
+        showSuccess();
+        return;
+      }
+
+      button.disabled = true;
+      button.textContent = 'Sending…';
+
+      try {
+        const body = new URLSearchParams();
+        for (const [key, value] of data.entries()) {
+          body.append(key, value.toString());
+        }
+        const response = await fetch('/', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: body.toString(),
+        });
+        if (!response.ok) throw new Error(`Submission failed with ${response.status}`);
+        showSuccess();
+      } catch {
+        showError();
+      }
+    });
+  }
+</script>
