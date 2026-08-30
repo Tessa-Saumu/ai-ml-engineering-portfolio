@@ -1,6 +1,7 @@
 export type Project = {
   slug: string;
   title: string;
+  seoTitle?: string;
   subtitle?: string;
   summary: string;
   problem: string;
@@ -73,6 +74,7 @@ export const projects: Project[] = [
   {
     slug: 'alzheimers-disease-classification',
     title: "Alzheimer's Disease Classification",
+    seoTitle: "Alzheimer's Classification",
     summary: "I built an Alzheimer's image classifier intended to assist with timely flagging, but a working classifier isn't enough. I needed to know which model to trust and whether its performance was actually real.",
     problem: "I built an Alzheimer's image classifier intended to assist with timely flagging, but a working classifier isn't enough. I needed to know which model to trust and whether its performance was actually real.",
     did: "I trained and compared DenseNet, ResNet, and EfficientNet rather than defaulting to one architecture. For each model, I tested which blocks to freeze rather than tuning the same layers across all three. I also used per-image regularization. For model selection, I didn't optimize for the highest accuracy. I selected for the smallest training validation gap because I wanted a better signal of generalization. Then I audited the dataset and found augmented duplicate scans across the train and test split, which meant the original result was leaked. I rejected it rather than reporting it.",
