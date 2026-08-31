@@ -53,6 +53,7 @@ h3 { font-size: clamp(1.35rem, 2.2vw, 1.85rem); }
   border-bottom: 1px solid var(--line);
 }
 .hero h1 { max-width: 720px; margin-bottom: 16px; font-size: clamp(2.15rem, 4.8vw, 3.55rem); }
+.hero-role { color: var(--green); font-family: 'Sora', sans-serif; font-weight: 600; font-size: clamp(0.95rem, 1.5vw, 1.1rem); }
 .hero-claim { max-width: 640px; margin-bottom: 20px; font-family: 'Sora', sans-serif; color: var(--green); font-size: clamp(1.02rem, 1.7vw, 1.2rem); line-height: 1.45; }
 .hero-copy { max-width: 640px; }
 .hero-copy p { margin-bottom: 0.95rem; }
