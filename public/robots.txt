@@ -1,0 +1,5 @@
+# Let every crawler read the public pages; nothing here is private.
+User-agent: *
+Allow: /
+
+Sitemap: https://theresia-saumu.netlify.app/sitemap-index.xml

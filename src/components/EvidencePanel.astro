@@ -1,6 +1,7 @@
 ---
 import type { Project } from '../data/projects';
 import TechStackList from './TechStackList.astro';
+import ProjectMedia from './ProjectMedia.astro';
 
 interface Props { project: Project }
 const { project } = Astro.props;
@@ -9,9 +10,9 @@ const { project } = Astro.props;
 <aside class="evidence-panel" aria-label="Project evidence">
   <p class="eyebrow">Evidence</p>
   <h2>{project.evidenceLabel}</h2>
-  {project.image && (
+  {(project.image || project.video) && (
     <figure>
-      <img src={project.image} alt={project.imageAlt} />
+      <ProjectMedia project={project} />
       {project.evidenceNote && <figcaption>{project.evidenceNote}</figcaption>}
     </figure>
   )}
