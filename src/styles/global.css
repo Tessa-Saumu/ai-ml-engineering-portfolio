@@ -140,13 +140,16 @@ h3 { font-size: clamp(1.35rem, 2.2vw, 1.85rem); }
 .page-intro-copy .lead { margin: 0; color: var(--green); font-family: 'Sora', sans-serif; font-size: 1.08rem; }
 
 /* Resume: the CV is one US Letter page, so the frame is locked to 612 x 792 and the whole
-   sheet shows at once. It sits centred and bordered so it reads as a document on the page. */
+   sheet shows at once. It sits centred and bordered so it reads as a document on the page.
+   Visibility is driven by the `hidden` attribute (see resume.astro) rather than `display`,
+   so the PDF is never fetched on viewports that won't show it. */
 .resume-doc { padding-block: 44px 96px; }
 .resume-frame-wrap { max-width: 860px; margin-inline: auto; border: 1px solid var(--line); background: var(--paper); }
 .resume-frame { display: block; width: 100%; aspect-ratio: 612 / 792; border: 0; }
 .resume-fallback { display: grid; place-content: center; height: 100%; padding: 32px; text-align: center; }
 .resume-fallback p { margin-bottom: 0; }
-.resume-mobile { display: none; }
+.resume-offer { max-width: 620px; padding: 26px; border: 1px solid var(--line); background: var(--paper); }
+.resume-offer p { margin-bottom: 0; }
 
 .case-study { padding-block: 48px 96px; }
 .case-hero { max-width: 820px; padding-bottom: 36px; }
@@ -227,9 +230,6 @@ h3 { font-size: clamp(1.35rem, 2.2vw, 1.85rem); }
   .project-card-visual, .project-card.featured:first-child .project-card-visual { min-height: 220px; }
   .case-grid { grid-template-columns: 1fr; }
   .resume-doc { padding-block: 28px 64px; }
-  .resume-frame-wrap { display: none; }
-  .resume-mobile { display: block; padding: 26px; border: 1px solid var(--line); background: var(--paper); }
-  .resume-mobile p { margin-bottom: 0; }
   .evidence-panel { position: static; }
   .case-section { grid-template-columns: 42px 1fr; gap: 12px; }
   .footer-inner { align-items: flex-start; flex-direction: column; justify-content: center; }

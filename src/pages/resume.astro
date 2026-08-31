@@ -22,10 +22,16 @@ const resumeEmbed = `${resumePdf}#view=FitH&toolbar=0&navpanes=0`;
   <section class="resume-doc shell" aria-labelledby="resume-doc-title">
     <h2 id="resume-doc-title" class="visually-hidden">Resume document</h2>
 
-    <div class="resume-frame-wrap">
+    {/*
+      The 316 KB PDF is deliberately NOT referenced in the markup. `data` is only set by the
+      script below, and only on viewports wide enough to read a full Letter page. CSS
+      `display: none` would not have prevented the download - browsers still fetch hidden
+      embeds - so the attribute has to be absent until we actually want the file.
+    */}
+    <div class="resume-frame-wrap" data-resume-embed hidden>
       <object
         class="resume-frame"
-        data={resumeEmbed}
+        data-src={resumeEmbed}
         type="application/pdf"
         aria-label="Resume of Theresia Saumu, Applied AI and Machine Learning Engineer. One page PDF."
       >
@@ -36,11 +42,40 @@ const resumeEmbed = `${resumePdf}#view=FitH&toolbar=0&navpanes=0`;
       </object>
     </div>
 
-    {/* Phones don't render embedded PDFs reliably, and a full Letter page is too small to read
-        on one anyway, so below 800px the embed is replaced by a direct link. */}
-    <div class="resume-mobile">
-      <p>A full page of CV is hard to read on a small screen, so open it full screen instead.</p>
+    {/* Shown on phones and with JavaScript off: both cases get a real link, never a blank frame. */}
+    <div class="resume-offer" data-resume-offer>
+      <p>The CV is a single page. On a small screen it reads better full screen than in an embed.</p>
       <a class="primary-action" href={resumePdf} target="_blank" rel="noopener">Open the resume (PDF) →</a>
     </div>
   </section>
+
+  <script is:inline>
+    // Runs during parse so the embed is in place before first paint, no flash of the link card.
+    (function () {
+      var wrap = document.querySelector('[data-resume-embed]');
+      var offer = document.querySelector('[data-resume-offer]');
+      var frame = wrap && wrap.querySelector('.resume-frame');
+      if (!wrap || !frame) return;
+
+      // Matches the 800px breakpoint in global.css.
+      var wide = window.matchMedia('(min-width: 801px)');
+
+      function sync() {
+        if (wide.matches) {
+          // Setting `data` is what triggers the download, so it happens once, on demand.
+          if (!frame.hasAttribute('data')) frame.setAttribute('data', frame.dataset.src);
+          wrap.hidden = false;
+          if (offer) offer.hidden = true;
+        } else {
+          wrap.hidden = true;
+          if (offer) offer.hidden = false;
+        }
+      }
+
+      sync();
+      // addListener is the pre-Safari-14 spelling; keep both so older iPads still switch over.
+      if (wide.addEventListener) wide.addEventListener('change', sync);
+      else if (wide.addListener) wide.addListener(sync);
+    })();
+  </script>
 </BaseLayout>
