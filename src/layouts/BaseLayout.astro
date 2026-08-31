@@ -37,6 +37,14 @@ const { title, description } = Astro.props;
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Sora:wght@600;700&display=swap" rel="stylesheet" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="google-site-verification" content="lbmV_e1Hm_oyfSBxbdtmO9gl9ARpYHkHC1JFjjSHuDA" />
+    <script type="text/javascript">
+      (function(c,l,a,r,i,t,y){
+          c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+          t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+          y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+      })(window, document, "clarity", "script", "yb3s80yscp");
+    </script>
     <title>{title}</title>
   </head>
   <body>
@@ -75,5 +83,8 @@ const { title, description } = Astro.props;
         });
       })();
     </script>
+    <!-- Cloudflare Web Analytics -->
+    <script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "437806dc3e2747d996f5bb6f2033335c"}'></script>
+    <!-- End Cloudflare Web Analytics -->
   </body>
 </html>
