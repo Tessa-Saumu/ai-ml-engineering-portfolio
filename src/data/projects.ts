@@ -9,6 +9,10 @@ export type Project = {
   outcome: string;
   image?: string;
   imageAlt?: string;
+  /* When set, the card and evidence panel play this silent looping clip instead of `image`.
+     Produced from the original screen recording, see README > Derived media assets. */
+  video?: string;
+  videoPoster?: string;
   evidenceLabel: string;
   evidenceNote?: string;
   tech: string[];
@@ -25,7 +29,8 @@ export const projects: Project[] = [
     problem: 'Starting a BI project means profiling the data, deciding what matters to the business, writing the queries, and building the report. That setup gets redone from scratch for every new business.',
     did: "I built a BI report automation tool with deterministic data profiling and LLM-based KPI inference. Profiling is deterministic on purpose: typing and structuring a column has one correct answer and doesn't need an LLM guessing at it. KPI inference is where the judgment lives, so the LLM proposes KPIs within a schema rather than free text. A Reflector checks those proposals before they move forward. Early runs sometimes produced something technically valid but wrong for the data, like a churn rate for a business with no repeat customers. The final stage is a PBIR compiler I built by reverse-engineering Power BI's file format, so the output opens directly in Power BI Desktop rather than becoming another CSV to import manually.",
     outcome: "I ran the full pipeline against HR analytics, Chinook, and retail, three different domains, and all three completed end to end, with the pipeline catching and rectifying errors. Next time I'd test it against more domains before calling the architecture settled.",
-    image: '/images/agentic-bi-demo.gif',
+    video: '/images/agentic-bi-demo.mp4',
+    videoPoster: '/images/agentic-bi-demo-poster.webp',
     imageAlt: 'Full in-motion demo of Agentic BI Builder running from raw data through KPI reasoning to a Power BI file.',
     evidenceLabel: 'End-to-end demo',
     tech: ['Power BI'],

@@ -1,14 +1,42 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+
+const resumePdf = '/Theresia-Saumu-Applied-AI-ML-Engineer-CV.pdf';
+// The CV is rendered to an image at 2x the display width so the page can be shown inside the
+// site's own frame. The browser's built-in PDF viewer paints its own #282828 backdrop and
+// cannot be styled from the page, so embedding the file directly always clashed.
+// See README > Derived media assets for how to regenerate this after updating the CV.
+const resumeSheet = '/images/resume-page.webp';
 ---
 
 <BaseLayout title="Resume | Theresia Saumu" description="Resume of Theresia Saumu, Applied AI and Machine Learning engineer. Her key projects are here too, alongside experience, education, and a downloadable CV.">
-  <section class="simple-page shell">
-    <div class="simple-grid">
-      <h1>Resume</h1>
-      <div class="simple-copy">
-        <a class="primary-action" href="/Theresia-Saumu-Applied-AI-ML-Engineer-CV.pdf">View my resume →</a>
+  <header class="page-intro shell">
+    <h1>Resume</h1>
+    <div class="page-intro-copy">
+      <p class="lead">The whole CV on one page, below. Read it here, or take a copy with you.</p>
+      <div class="link-row">
+        <a href={resumePdf} target="_blank" rel="noopener">Open in a new tab →</a>
+        <a href={resumePdf} download>Download the PDF →</a>
       </div>
     </div>
+  </header>
+
+  <section class="resume-doc shell" aria-labelledby="resume-doc-title">
+    <h2 id="resume-doc-title" class="visually-hidden">Resume document</h2>
+
+    <figure class="resume-sheet">
+      <img
+        src={resumeSheet}
+        width="1720"
+        height="2226"
+        loading="lazy"
+        decoding="async"
+        alt="One page CV for Theresia Saumu, Applied AI and Machine Learning Engineer, covering experience at FlyRank AI and AnalystLab Africa, the SolarSense, StudyGapAI and Alzheimer's classifier projects, technical skills, and education. The same content is in the PDF linked below."
+      />
+    </figure>
+
+    <p class="resume-sheet-note">
+      <a class="primary-action" href={resumePdf} target="_blank" rel="noopener">Open the resume as a PDF →</a>
+    </p>
   </section>
 </BaseLayout>

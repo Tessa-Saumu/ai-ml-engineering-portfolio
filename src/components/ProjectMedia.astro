@@ -1,0 +1,32 @@
+---
+import type { Project } from '../data/projects';
+
+interface Props {
+  project: Project;
+  loading?: 'lazy' | 'eager';
+}
+
+const { project, loading = 'lazy' } = Astro.props;
+---
+
+{project.video ? (
+  /*
+    Replaces the old autoplaying GIF. `controls` and `preload="none"` are the no-JavaScript
+    baseline: nothing downloads until someone presses play. The inline script in BaseLayout
+    upgrades this to a silent in-view autoplay loop, unless the visitor prefers reduced motion.
+  */
+  <video
+    class="project-media"
+    src={project.video}
+    poster={project.videoPoster}
+    aria-label={project.imageAlt}
+    preload="none"
+    controls
+    loop
+    muted
+    playsinline
+    data-autoplay
+  ></video>
+) : project.image && (
+  <img class="project-media" src={project.image} alt={project.imageAlt} loading={loading} decoding="async" />
+)}
