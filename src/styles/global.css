@@ -3,6 +3,8 @@
   --background: #f7f7f3;
   --green: #3f5c55;
   --green-dark: #314841;
+  /* Same hue family as --green, lifted so it still reads as green next to the near-black headline text. */
+  --green-accent: #3d7a65;
   --gold: #c6a15b;
   --line: rgba(63, 92, 85, 0.22);
   --paper: #efefe8;
@@ -46,17 +48,39 @@ h3 { font-size: clamp(1.35rem, 2.2vw, 1.85rem); }
 
 .hero {
   display: grid;
-  grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.75fr);
-  gap: clamp(36px, 6vw, 72px);
+  /* Slightly wider right column + tighter gutter so the portrait reads as an equal partner to the text. */
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+  gap: clamp(28px, 4.2vw, 56px);
   align-items: stretch;
   padding-block: 40px 28px;
   border-bottom: 1px solid var(--line);
 }
-.hero h1 { max-width: 720px; margin-bottom: 16px; font-size: clamp(2.15rem, 4.8vw, 3.55rem); }
-.hero-role { color: var(--green); font-family: 'Sora', sans-serif; font-weight: 600; font-size: clamp(0.95rem, 1.5vw, 1.1rem); }
+.hero h1 {
+  max-width: 620px;
+  margin-bottom: 22px;
+  /* Neutral headline, brand green reserved for the two emphasised phrases. */
+  color: var(--text);
+  font-size: clamp(1.95rem, 3.6vw, 2.8rem);
+  line-height: 1.18;
+  letter-spacing: -0.022em;
+  text-wrap: balance;
+}
+.hero h1 .hero-accent { color: var(--green-accent); }
+/* Roles read as compact credentials, not body copy. */
+.hero-roles { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 26px; padding: 0; list-style: none; }
+.hero-role {
+  padding: 5px 12px;
+  border: 1px solid var(--line);
+  background: rgba(63, 92, 85, 0.05);
+  color: var(--green);
+  font-size: 0.78rem;
+  font-weight: 500;
+  line-height: 1.5;
+  letter-spacing: 0.01em;
+}
 .hero-claim { max-width: 640px; margin-bottom: 20px; font-family: 'Sora', sans-serif; color: var(--green); font-size: clamp(1.02rem, 1.7vw, 1.2rem); line-height: 1.45; }
-.hero-copy { max-width: 640px; }
-.hero-copy p { margin-bottom: 0.95rem; }
+.hero-copy { max-width: 560px; }
+.hero-copy p { margin-bottom: 1.05rem; line-height: 1.78; text-wrap: pretty; }
 .hero-portrait {
   position: relative;
   min-width: 0;
@@ -93,6 +117,9 @@ h3 { font-size: clamp(1.35rem, 2.2vw, 1.85rem); }
 .project-card:nth-child(even) .project-card-copy { order: 2; }
 .project-card-copy { align-self: center; }
 .project-card-copy p:not(.project-number) { max-width: 540px; }
+/* The summary reads as setup then response; the rule marks where the problem ends and the build/result begins. */
+.project-summary-problem { margin-bottom: 18px; }
+.project-summary-response { padding-left: 18px; border-left: 2px solid rgba(63, 92, 85, 0.32); }
 .project-card-visual { min-height: 280px; overflow: hidden; background: var(--paper); }
 .project-card.featured:first-child .project-card-visual { min-height: 340px; }
 .project-card-visual img { width: 100%; height: auto; }
@@ -199,7 +226,7 @@ h3 { font-size: clamp(1.35rem, 2.2vw, 1.85rem); }
   h1 { font-size: 2.05rem; }
   .header-inner { align-items: flex-start; flex-direction: column; gap: 10px; padding-block: 16px; }
   .nav-list { width: 100%; justify-content: space-between; }
-  .hero h1 { font-size: 2.15rem; }
+  .hero h1 { font-size: 1.85rem; }
   .page-intro { padding-block: 40px 20px; }
   .case-study { padding-block: 36px 64px; }
   .back-link { margin-bottom: 28px; }
