@@ -1,46 +1,126 @@
-# Astro Starter Kit: Minimal
+# Applied AI & ML Engineering Portfolio
 
-```sh
-npm create astro@latest -- --template minimal
-```
+Source code for [theresia-saumu.netlify.app](https://theresia-saumu.netlify.app), the
+portfolio site of Theresia Saumu, an Applied AI and Machine Learning engineer.
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+This README is for whoever maintains the site — most often future-me — and for anyone
+curious how it's built. It covers four things: what the site does, how to run it, where
+the content lives, and how it ships. It also states plainly where AI did the work,
+in [How I built this with AI](#how-i-built-this-with-ai).
 
-## 🚀 Project Structure
+## The site at a glance
 
-Inside of your Astro project, you'll see the following folders and files:
+The site is a static Astro site with one job: show five applied projects as evidence of
+how I work. Each project is a case study with the same structure — the problem, what I
+did, and the outcome, including what I'd do differently next time. A visitor can read a
+case study, download the resume, and send me a scoped problem to solve without leaving
+the site.
+
+| Route | What it shows |
+|---|---|
+| `/` | Positioning statement, and the first two projects from `projects.ts` |
+| `/projects` | All five case studies |
+| `/projects/[slug]` | One case study page per project, generated at build time |
+| `/resume` | The CV rendered as an image, with the PDF linked for download |
+| `/contact` | A contact form backed by Netlify Forms |
+| `/thanks` | Confirmation page for form submissions without JavaScript |
+| `/404` | Not-found page |
+
+## Tech stack
+
+The stack has few moving parts on purpose. Every piece below earns its place; anything
+heavier would be complexity the site doesn't need.
+
+| Technology | What it's for here |
+|---|---|
+| [Astro](https://astro.build) 7 | Static site generator. Ships zero JavaScript by default; the only scripts are small inline enhancements. |
+| TypeScript | Types the case study data model in `src/data/projects.ts`, so a missing field fails at build time. |
+| One `global.css` file | All styling. No CSS framework, no UI framework — the design is a Sora/Inter type pairing and two accent colours. |
+| [Netlify](https://www.netlify.com) | Hosting. Builds and deploys the site on every push to `master`. |
+| [Netlify Forms](https://docs.netlify.com/forms/setup/) | Handles the contact form. The site has no server of its own; Netlify receives submissions, filters spam, and emails me. |
+| `@astrojs/sitemap` | Generates the sitemap, and sets canonical URLs from the `site` value in `astro.config.mjs`. |
+| Microsoft Clarity | Cookieless analytics, loaded inline in `BaseLayout.astro`. |
+
+## Project structure
 
 ```text
 /
-├── public/
+├── public/                          # Static assets served as-is:
+│   ├── images/                      #   case study media, portrait, resume render
+│   ├── Theresia-Saumu-Applied-AI-ML-Engineer-CV.pdf
+│   ├── social-card.jpg              #   Open Graph / Twitter share image
+│   └── favicon.*  apple-touch-icon.png
 ├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
+│   ├── data/projects.ts             # The five case studies. Single source of truth.
+│   ├── pages/                       # One file per route (/, /projects, /resume, …)
+│   ├── components/                  # Astro components: header, footer, cards,
+│   │                                # case study sections, CTA, media block
+│   ├── layouts/BaseLayout.astro     # Shared <head>: meta, Open Graph, fonts, analytics
+│   └── styles/global.css            # Every style on the site, in one file
+├── astro.config.mjs                 # Sets `site` (for canonical URLs + sitemap)
+├── netlify.toml                     # Build command, publish dir, Node version pin
+└── CONTACT_FORM_SETUP.md            # Contact form setup, testing, and troubleshooting
 ```
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+Two folders in the repo are working documents, not part of the build:
+`identity_creation_docs/` holds the planning PDFs the site's positioning grew out of,
+and `scratch_folder/` holds working screenshots.
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+## How content works
 
-Any static assets, like images, can be placed in the `public/` directory.
+Every case study lives in `src/data/projects.ts` — not in Markdown, and not in a CMS.
+A typed `Project` object holds the full case study: `problem`, `did`, `outcome`, tech
+list, media, evidence label, and an optional repository link. Case study pages are
+generated from this file at build time, so TypeScript checks every field before deploy.
 
-## 🧞 Commands
+Two details worth knowing when editing:
 
-All commands are run from the root of the project, from a terminal:
+- The homepage shows `selectedProjects`, the first two entries in the array. Reorder
+  the array to change what the homepage features.
+- A project with a `video` and `videoPoster` plays a muted looping clip in place of a
+  static image; see [Derived media assets](#derived-media-assets) for how the clip is made.
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
+## Running it locally
 
-## 👀 Want to learn more?
+Prerequisite: Node.js 22.12.0 or newer (see `"engines"` in `package.json` — Astro 7
+requires it).
 
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+1. Clone the repository.
+2. Install dependencies with `npm install`.
+3. Start the dev server with `npm run dev`.
+4. Open `localhost:4321`.
+
+All commands run from the repository root:
+
+| Command | Action |
+|---|---|
+| `npm install` | Installs dependencies |
+| `npm run dev` | Starts the local dev server at `localhost:4321` |
+| `npm run build` | Builds the production site to `./dist/` |
+| `npm run preview` | Previews the production build locally |
+
+## Deployment
+
+Netlify builds the site from `master`. Push to that branch, and Netlify runs
+`npm run build` and publishes `dist/`. `netlify.toml` sets the build command, the
+publish directory, and `NODE_VERSION = 22.12.0` so the build uses a Node version
+Astro 7 supports.
+
+The contact form needs one-time setup in the Netlify UI — enabling form detection and
+turning on email notifications. For those steps, local testing limits, submission limits,
+and a troubleshooting table, see [CONTACT_FORM_SETUP.md](CONTACT_FORM_SETUP.md).
+
+## How I built this with AI
+
+AI did most of the implementation. I used AI coding assistants to produce the
+components, pages, and styles, and to refine the content — the hero copy, the case
+study write-ups, and the text throughout the site, including this README.
+
+Every final decision was mine: the positioning, which projects made the cut, what the
+copy says, and which AI suggestions I took and which I rejected. So was verification.
+I tested each working piece myself before it shipped — the build, the media pipeline,
+and the contact form end to end on the deployed site. If something on this site is
+wrong, that's on me, not the model.
 
 ## Derived media assets
 
