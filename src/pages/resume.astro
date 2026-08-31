@@ -2,9 +2,11 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 
 const resumePdf = '/Theresia-Saumu-Applied-AI-ML-Engineer-CV.pdf';
-// The CV is a single US Letter page (612 x 792pt). FitH plus that exact aspect ratio on the
-// frame means the whole page is visible at once, with no scrollbar inside the embed.
-const resumeEmbed = `${resumePdf}#view=FitH&toolbar=0&navpanes=0`;
+// The CV is rendered to an image at 2x the display width so the page can be shown inside the
+// site's own frame. The browser's built-in PDF viewer paints its own #282828 backdrop and
+// cannot be styled from the page, so embedding the file directly always clashed.
+// See README > Derived media assets for how to regenerate this after updating the CV.
+const resumeSheet = '/images/resume-page.webp';
 ---
 
 <BaseLayout title="Resume | Theresia Saumu" description="Resume of Theresia Saumu, Applied AI and Machine Learning engineer. Her key projects are here too, alongside experience, education, and a downloadable CV.">
@@ -22,60 +24,19 @@ const resumeEmbed = `${resumePdf}#view=FitH&toolbar=0&navpanes=0`;
   <section class="resume-doc shell" aria-labelledby="resume-doc-title">
     <h2 id="resume-doc-title" class="visually-hidden">Resume document</h2>
 
-    {/*
-      The 316 KB PDF is deliberately NOT referenced in the markup. `data` is only set by the
-      script below, and only on viewports wide enough to read a full Letter page. CSS
-      `display: none` would not have prevented the download - browsers still fetch hidden
-      embeds - so the attribute has to be absent until we actually want the file.
-    */}
-    <div class="resume-frame-wrap" data-resume-embed hidden>
-      <object
-        class="resume-frame"
-        data-src={resumeEmbed}
-        type="application/pdf"
-        aria-label="Resume of Theresia Saumu, Applied AI and Machine Learning Engineer. One page PDF."
-      >
-        <div class="resume-fallback">
-          <p>This browser can't display the PDF inline.</p>
-          <a class="primary-action" href={resumePdf} target="_blank" rel="noopener">Open the resume (PDF) →</a>
-        </div>
-      </object>
-    </div>
+    <figure class="resume-sheet">
+      <img
+        src={resumeSheet}
+        width="1720"
+        height="2226"
+        loading="lazy"
+        decoding="async"
+        alt="One page CV for Theresia Saumu, Applied AI and Machine Learning Engineer, covering experience at FlyRank AI and AnalystLab Africa, the SolarSense, StudyGapAI and Alzheimer's classifier projects, technical skills, and education. The same content is in the PDF linked below."
+      />
+    </figure>
 
-    {/* Shown on phones and with JavaScript off: both cases get a real link, never a blank frame. */}
-    <div class="resume-offer" data-resume-offer>
-      <p>The CV is a single page. On a small screen it reads better full screen than in an embed.</p>
-      <a class="primary-action" href={resumePdf} target="_blank" rel="noopener">Open the resume (PDF) →</a>
-    </div>
+    <p class="resume-sheet-note">
+      <a class="primary-action" href={resumePdf} target="_blank" rel="noopener">Open the resume as a PDF →</a>
+    </p>
   </section>
-
-  <script is:inline>
-    // Runs during parse so the embed is in place before first paint, no flash of the link card.
-    (function () {
-      var wrap = document.querySelector('[data-resume-embed]');
-      var offer = document.querySelector('[data-resume-offer]');
-      var frame = wrap && wrap.querySelector('.resume-frame');
-      if (!wrap || !frame) return;
-
-      // Matches the 800px breakpoint in global.css.
-      var wide = window.matchMedia('(min-width: 801px)');
-
-      function sync() {
-        if (wide.matches) {
-          // Setting `data` is what triggers the download, so it happens once, on demand.
-          if (!frame.hasAttribute('data')) frame.setAttribute('data', frame.dataset.src);
-          wrap.hidden = false;
-          if (offer) offer.hidden = true;
-        } else {
-          wrap.hidden = true;
-          if (offer) offer.hidden = false;
-        }
-      }
-
-      sync();
-      // addListener is the pre-Safari-14 spelling; keep both so older iPads still switch over.
-      if (wide.addEventListener) wide.addEventListener('change', sync);
-      else if (wide.addListener) wide.addListener(sync);
-    })();
-  </script>
 </BaseLayout>

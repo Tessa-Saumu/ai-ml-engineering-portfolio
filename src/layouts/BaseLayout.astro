@@ -46,5 +46,34 @@ const { title, description } = Astro.props;
       <slot />
     </main>
     <Footer />
+    <script is:inline>
+      // Progressive enhancement for the demo clips that replaced the old GIFs.
+      // Baseline markup is `controls preload="none"`, so nothing downloads unprompted.
+      // Here we restore the old GIF feel: silent autoplay while on screen, paused off screen.
+      // Visitors who prefer reduced motion keep the controls and decide for themselves.
+      (function () {
+        var clips = document.querySelectorAll('video[data-autoplay]');
+        if (!clips.length) return;
+
+        var still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (still || !('IntersectionObserver' in window)) return;
+
+        var seen = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            var clip = entry.target;
+            if (entry.isIntersecting) {
+              clip.play().catch(function () { clip.controls = true; });
+            } else {
+              clip.pause();
+            }
+          });
+        }, { rootMargin: '200px' });
+
+        clips.forEach(function (clip) {
+          clip.controls = false;
+          seen.observe(clip);
+        });
+      })();
+    </script>
   </body>
 </html>
