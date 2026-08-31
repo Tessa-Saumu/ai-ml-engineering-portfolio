@@ -1,14 +1,46 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+
+const resumePdf = '/Theresia-Saumu-Applied-AI-ML-Engineer-CV.pdf';
+// The CV is a single US Letter page (612 x 792pt). FitH plus that exact aspect ratio on the
+// frame means the whole page is visible at once, with no scrollbar inside the embed.
+const resumeEmbed = `${resumePdf}#view=FitH&toolbar=0&navpanes=0`;
 ---
 
 <BaseLayout title="Resume | Theresia Saumu" description="Resume of Theresia Saumu, Applied AI and Machine Learning engineer. Her key projects are here too, alongside experience, education, and a downloadable CV.">
-  <section class="simple-page shell">
-    <div class="simple-grid">
-      <h1>Resume</h1>
-      <div class="simple-copy">
-        <a class="primary-action" href="/Theresia-Saumu-Applied-AI-ML-Engineer-CV.pdf">View my resume →</a>
+  <header class="page-intro shell">
+    <h1>Resume</h1>
+    <div class="page-intro-copy">
+      <p class="lead">The whole CV on one page, below. Read it here, or take a copy with you.</p>
+      <div class="link-row">
+        <a href={resumePdf} target="_blank" rel="noopener">Open in a new tab →</a>
+        <a href={resumePdf} download>Download the PDF →</a>
       </div>
+    </div>
+  </header>
+
+  <section class="resume-doc shell" aria-labelledby="resume-doc-title">
+    <h2 id="resume-doc-title" class="visually-hidden">Resume document</h2>
+
+    <div class="resume-frame-wrap">
+      <object
+        class="resume-frame"
+        data={resumeEmbed}
+        type="application/pdf"
+        aria-label="Resume of Theresia Saumu, Applied AI and Machine Learning Engineer. One page PDF."
+      >
+        <div class="resume-fallback">
+          <p>This browser can't display the PDF inline.</p>
+          <a class="primary-action" href={resumePdf} target="_blank" rel="noopener">Open the resume (PDF) →</a>
+        </div>
+      </object>
+    </div>
+
+    {/* Phones don't render embedded PDFs reliably, and a full Letter page is too small to read
+        on one anyway, so below 800px the embed is replaced by a direct link. */}
+    <div class="resume-mobile">
+      <p>A full page of CV is hard to read on a small screen, so open it full screen instead.</p>
+      <a class="primary-action" href={resumePdf} target="_blank" rel="noopener">Open the resume (PDF) →</a>
     </div>
   </section>
 </BaseLayout>
