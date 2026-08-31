@@ -34,6 +34,14 @@ h3 { font-size: clamp(1.35rem, 2.2vw, 1.85rem); }
 .footer-inner p { margin: 0; color: var(--green); }
 .footer-inner a { font-weight: 600; }
 .eyebrow, .section-index, .project-number { color: var(--green); font-size: 0.72rem; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; }
+
+.hero-label {
+  color: var(--green);
+  font-family: 'Sora', sans-serif;
+  font-size: 0.88rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+}
 .text-link { display: inline-block; margin-top: 8px; color: var(--green); font-weight: 600; }
 
 .hero {

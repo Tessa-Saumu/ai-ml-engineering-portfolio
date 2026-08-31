@@ -7,9 +7,10 @@ const links = [
 ];
 ---
 
-<header class="site-header">
-  <div class="shell header-inner">
+<header class="site-header" style="position: sticky; top: 0; background: var(--background); border-bottom: 1px solid var(--line);">
+  <div class="shell header-inner" style="align-items: center; gap: 16px;">
     <a class="wordmark" href="/" aria-label="Theresia, home">THERESIA</a>
+    <span class="hero-label">Applied AI/ML Engineer</span>
     <nav aria-label="Main navigation">
       <ul class="nav-list">
         {links.map((link) => (
